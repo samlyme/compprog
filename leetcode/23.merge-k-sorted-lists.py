@@ -3,6 +3,7 @@
 #
 # [23] Merge k Sorted Lists
 #
+from heapq import heapify, heappop, heappush
 from typing import List, Optional
 
 
@@ -17,23 +18,30 @@ class Solution:
     def mergeKLists(self, lists: List[Optional[ListNode]]) -> Optional[ListNode]:
         if len(lists) == 0: return None
         
+        pq = [(x.val, idx, x) for idx, x in enumerate(lists) if x is not None]
+        if len(pq) == 0: return None
+        
+        heapify(pq)
+
+        # This is needed because python is a trash lang
+        # essentially, when given an iterable as an item for a heap, it will
+        # give the first value the most weight, then the next.
+        # for us, if the val is tie, we dont care, so i keep a counter that 
+        # essentially prioritizes the earlier elements.
+        count = len(lists)
         dummy = ListNode()
-        curr = dummy
-        
-        while any(lists):
-            min_idx = -1
-            min_val = None
-            for i, node in enumerate(lists):
-                if not node: continue
-                if min_val == None or node.val < min_val:
-                    min_val = node.val
-                    min_idx = i
-                    
-            curr.next = lists[min_idx]
-            curr = curr.next
-            lists[min_idx] = lists[min_idx].next
-        
+        head = dummy
+        while pq:
+            curr = heappop(pq)[2]
+            head.next = curr
+            head = head.next
+            
+            if curr.next:
+                heappush(pq, (curr.next.val, count, curr.next))
+                count += 1
+
         return dummy.next
+            
         
 # @lc code=end
 
