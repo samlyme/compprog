@@ -19,23 +19,29 @@ class TreeNode:
 
 class Solution:
     def recoverFromPreorder(self, traversal: str) -> Optional[TreeNode]:
-        latest = {}
+        stack = []
         vals = list(filter(None, traversal.split("-")))
         depths = list(filter(None, re.split(r"[0-9]", traversal)))
 
-        latest[0] = TreeNode(int(vals[0]))
+        root = TreeNode(int(vals[0]))
+        stack.append(root)
 
         for i in range(len(depths)):
             depth = len(depths[i])
 
-            latest[depth] = TreeNode(int(vals[i+1]))
+            curr = TreeNode(int(vals[i+1]))
 
-            if not latest[depth-1].left:
-                latest[depth-1].left = latest[depth]
+            for _ in range(len(stack) - depth):
+                stack.pop()
+
+            parent = stack[-1]  # top of stack
+            if not parent.left:
+                parent.left = curr
             else:
-                latest[depth-1].right = latest[depth]
+                parent.right = curr
+            stack.append(curr)
 
-        return latest[0]
+        return root
 
 
 # @lc code=end
