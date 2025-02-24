@@ -18,6 +18,7 @@ class TreeNode:
 
 class Solution:
     def constructFromPrePost(self, preorder: List[int], postorder: List[int]) -> Optional[TreeNode]:
+        # lmao
         stack = [TreeNode(preorder[0])]
         j = 0
         for v in preorder[1:]:
