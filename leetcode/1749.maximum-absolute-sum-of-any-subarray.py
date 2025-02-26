@@ -10,21 +10,16 @@ from typing import List
 
 class Solution:
     def maxAbsoluteSum(self, nums: List[int]) -> int:
-        champ = 0
-        curr = 0
-        sign = nums[0] < 0
+        max_sum = 0
+        min_sum = 0
+        curr_max = 0
+        curr_min = 0
+        for x in nums:
+            curr_max = max(x, curr_max + x)
+            curr_min = min(x, curr_min + x)
+            max_sum = max(max_sum, curr_max)
+            min_sum = min(min_sum, curr_min)
 
-        for n in nums:
-            if n == 0:
-                continue
-
-            if (n < 0) != sign:
-                champ = max(champ, curr)
-                curr = 0
-                sign = n < 0
-
-            curr += abs(n)
-
-        return champ
+        return max(max_sum, abs(min_sum))
 
 # @lc code=end
