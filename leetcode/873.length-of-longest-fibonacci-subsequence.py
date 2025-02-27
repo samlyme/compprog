@@ -42,9 +42,15 @@ class Solution:
                 return 0
 
             memo[a][b] = 1 + rec(b, c)
+            # if memo[a][b] == 4:
+            #     print(a, b, c)
             return memo[a][b]
 
-        return 2 + max([rec(a, b)
-                        for a in range(len(arr)-2)
-                        for b in range(1, len(arr) - 1)])
+        out = max([rec(a, b)
+                   for a in range(len(arr)-2)
+                   for b in range(a + 1, len(arr) - 1)])
+
+        # for row in memo:
+        #     print(row)
+        return 0 if out == 0 else 2 + out
 # @lc code=end
