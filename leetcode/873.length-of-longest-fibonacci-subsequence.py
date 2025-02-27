@@ -21,10 +21,10 @@ class Solution:
         # a + b = c
         for b in range(len(arr) - 2, 0, -1):
             for c in range(b + 1, len(arr)):
-                a = index.get(arr[c] - arr[b], -1)
-                if a != -1 and a < b:
-                    memo[(a, b)] = max(
-                        memo.get((b, c), 2) + 1, memo.get((a, b), 3))
+                target = arr[c] - arr[b]
+                if target < arr[b] and target in index:
+                    a = index[target]
+                    memo[(a, b)] = memo.get((b, c), 2) + 1
                     max_length = max(max_length, memo[(a, b)])
 
         return max_length if max_length > 2 else 0
