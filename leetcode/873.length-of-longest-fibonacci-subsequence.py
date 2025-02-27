@@ -4,44 +4,28 @@
 # [873] Length of Longest Fibonacci Subsequence
 #
 
+import enum
 from typing import List
 # @lc code=start
 
 
 class Solution:
     def lenLongestFibSubseq(self, arr: List[int]) -> int:
-        # some type of dp problem, where you can choose to include
-        # the current item or not.
-        # if a choice does not satisfy the fib, return 0
-        # each "recursion" only needs to look back 2 items
-        # each "recursion" has a simple condition to end,
-        # using an index to search
+        index = {num: idx for idx, num in enumerate(arr)}
+        # MUST BE 2D
+        memo = {}   # Records the max length of a fib sequence with keys a, b
+        max_length = 0
 
-        # max length for a given a, b
-        memo = [[-1] * len(arr) for _ in range(len(arr))]
-        index = {n: i for i, n in enumerate(arr)}
+        # We need to do this "right to left", since values to the left depend
+        # on values from the right
+        # a + b = c
+        for b in range(len(arr) - 2, 0, -1):
+            for c in range(b + 1, len(arr)):
+                a = index.get(arr[c] - arr[b], -1)
+                if a != -1 and a < b:
+                    memo[(a, b)] = max(
+                        memo.get((b, c), 2) + 1, memo.get((a, b), 3))
+                    max_length = max(max_length, memo[(a, b)])
 
-        # given a, b, search if the rest has a valid "c"
-        def rec(a: int, b: int) -> int:
-            if memo[a][b] != -1:
-                return memo[a][b]
-
-            c = index.get(arr[a] + arr[b], -1)
-            # print(a, b, c)
-            if c == -1:  # valid c does not exist
-                memo[a][b] = 0
-                return 0
-
-            memo[a][b] = 1 + rec(b, c)
-            # if memo[a][b] == 4:
-            #     print(a, b, c)
-            return memo[a][b]
-
-        out = max([rec(a, b)
-                   for a in range(len(arr)-2)
-                   for b in range(a + 1, len(arr) - 1)])
-
-        # for row in memo:
-        #     print(row)
-        return 0 if out == 0 else 2 + out
+        return max_length if max_length > 2 else 0
 # @lc code=end
