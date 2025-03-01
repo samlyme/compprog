@@ -17,13 +17,10 @@ class Solution:
 
         # shift zeros
         j = 0
-        for i in range(len(nums) - 1):
-            if nums[i] == 0:
-                j = i + 1
-                while j < len(nums) - 1 and nums[j] == 0:
-                    j += 1
-                if nums[j] != 0:
-                    nums[i], nums[j] = nums[j], nums[i]
+        for k in range(len(nums)):
+            if nums[k] != 0:
+                nums[k], nums[j] = nums[j], nums[k]
+                j += 1
 
         return nums
 # @lc code=end
