@@ -21,21 +21,21 @@ class Solution:
 
         for start in range(len(graph)):
             frontier.append((start, 0))
+            # explored[start] = True
 
             while frontier:
                 curr, depth = frontier.pop()
                 path[depth] = curr
-                if not safe[curr] or curr in path[:depth]:
-                    safe[curr] = False
-                    for i in range(depth):
-                        safe[path[i]] = False
-                    depth = -1
 
-                if not explored[curr]:
-                    for successor in graph[curr]:
+                for successor in graph[curr]:
+                    if not safe[successor] or successor in path[:depth+1]:
+                        safe[successor] = False
+                        for i in range(depth+1):
+                            safe[path[i]] = False
+                        depth = -1
+                    if not explored[successor]:
                         frontier.append((successor, depth+1))
-
-                explored[curr] = True
+                        explored[successor] = True
 
         return [state for state, is_safe in enumerate(safe) if is_safe]
 
