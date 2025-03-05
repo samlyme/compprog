@@ -9,34 +9,36 @@ from typing import List
 
 
 class Solution:
+    def dfs(self, node, adj, visit, inStack):
+        # If the node is already in the stack, we have a cycle.
+        if inStack[node]:
+            return True
+        if visit[node]:
+            return False
+        # Mark the current node as visited and part of current recursion stack.
+        visit[node] = True
+        inStack[node] = True
+        for neighbor in adj[node]:
+            if self.dfs(neighbor, adj, visit, inStack):
+                return True
+        # Remove the node from the stack.
+        inStack[node] = False
+        return False
+
     def eventualSafeNodes(self, graph: List[List[int]]) -> List[int]:
-        # idea is to do a dfs, while tracking the path it took in a
-        # separate data structure. If you reach a loop, all nodes in that
-        # path are unsafe.
+        n = len(graph)
 
-        path = [-1] * len(graph)
-        frontier = []
-        safe = [True] * len(graph)
-        explored = [False] * len(graph)
+        visit = [False] * n
+        inStack = [False] * n
 
-        for start in range(len(graph)):
-            frontier.append((start, 0))
-            # explored[start] = True
+        for i in range(n):
+            self.dfs(i, graph, visit, inStack)
 
-            while frontier:
-                curr, depth = frontier.pop()
-                path[depth] = curr
+        safeNodes = []
+        for i in range(n):
+            if not inStack[i]:
+                safeNodes.append(i)
 
-                for successor in graph[curr]:
-                    if not safe[successor] or successor in path[:depth+1]:
-                        safe[successor] = False
-                        for i in range(depth+1):
-                            safe[path[i]] = False
-                        depth = -1
-                    if not explored[successor]:
-                        frontier.append((successor, depth+1))
-                        explored[successor] = True
-
-        return [state for state, is_safe in enumerate(safe) if is_safe]
+        return safeNodes
 
 # @lc code=end
